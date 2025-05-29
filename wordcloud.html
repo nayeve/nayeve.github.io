@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NayEve v4.5 Wordcloud — Optimized Orbit</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      font-family: 'Georgia', serif;
+      color: white;
+      overflow: hidden;
+    }
+    .logo, .intro, .ui-box {
+      position: absolute;
+      left: 7vw;
+    }
+    .logo {
+      top: 40px;
+      font-weight: bold;
+      font-size: 1.6em;
+      letter-spacing: 2px;
+    }
+    .intro {
+      top: 34vh;
+      font-size: 2.1em;
+      max-width: 80vw;
+    }
+    .ui-box {
+      top: 52vh;
+      background: #2c2c2c;
+      padding: 1.2em 2em;
+      border-radius: 16px;
+      font-size: 1em;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      z-index: 2;
+    }
+    .dice-button {
+      margin-top: 1em;
+      background: linear-gradient(to right, orange, red);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+      font-size: 2em;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .wordcloud {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .word {
+      position: absolute;
+      font-weight: 500;
+      font-size: 1.4em;
+      white-space: nowrap;
+      text-decoration: none;
+      line-height: 2em;
+      padding: 0 0.6em;
+      opacity: 0.85;
+      transform-origin: center left;
+      pointer-events: auto;
+      transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+    }
+    .word:hover {
+      color: #fff;
+      text-shadow: 0 0 8px #ff0, 0 0 12px #f0f, 0 0 16px #0ff;
+      transform: scale(1.2) rotateZ(10deg);
+    }
+    @media (max-width: 768px) {
+      .intro {
+        font-size: 1.2em;
+        top: 32vh;
+        max-width: 85vw;
+      }
+      .word {
+        font-size: 1.1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">NayEve</div>
+  <div class="intro">
+  <h1>This is a living orbital wordcloud where ideas drift like space debris, orbiting a central force, guided by your scroll and presence.</h1>
+</div>
+  <!-- UI box with dice roller hidden -->
+    <!-- Dice button hidden -->
+  </div>
+  <div class="wordcloud" id="wordcloud"></div>
+  <script>
+    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    let scrollVelocity = 0;
+let scrollTarget = 0;
+    document.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    document.addEventListener('wheel', e => {
+  scrollTarget += e.deltaY * 0.00004;
+});
+
+    const cloud = document.getElementById("wordcloud");
+    const wordElements = [];
+    const contentQueue = Array.from({ length: 300 }, () => randomSentence());
+
+    function randomSentence() {
+      const length = Math.floor(Math.random() * 6) + 4;
+      return Array.from({ length }, () => {
+        return Array.from({ length: Math.floor(Math.random() * 8) + 3 }, () =>
+          String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('');
+      }).join(' ');
+    }
+
+    function createWords(count = 80) {
+      for (let i = 0; i < count; i++) {
+        const a = document.createElement("a");
+        a.className = "word";
+        a.textContent = contentQueue.shift();
+        contentQueue.push(randomSentence());
+        a.href = `#link${i}`;
+        a.target = "_blank";
+        a.style.color = `hsl(${Math.random() * 360}, 70%, 70%)`;
+        cloud.appendChild(a);
+        wordElements.push(a);
+      }
+    }
+
+    function animateOrbit() {
+      let t = 0;
+      function step() {
+        scrollVelocity += (scrollTarget - scrollVelocity) * 0.05;
+        t += 0.001 + scrollVelocity;
+        scrollVelocity *= 0.92;
+
+        const gravity = 0.0015;
+        const len = wordElements.length;
+        const cx = 260;
+        const cy = window.innerHeight / 2;
+
+        for (let i = 0; i < len; i++) {
+          const angle = ((i / len) * 2 * Math.PI) + t;
+          const layerBase = 1 + (i % 5) * 0.2;
+          const keplerFactor = 1 + Math.min(Math.abs(scrollVelocity * 150), 0.3);
+          let a = 420 * layerBase * keplerFactor;
+          let b = 340 * layerBase * keplerFactor;
+
+          let x = a * Math.cos(angle) + cx;
+          let y = b * Math.sin(angle) + cy;
+          const dx = mouse.x - x;
+          const dy = mouse.y - y;
+          x += dx * gravity;
+          y += dy * gravity;
+
+          const word = wordElements[i];
+          word.style.left = `${x}px`;
+          word.style.top = `${y}px`;
+          word.style.transform = `rotate(${Math.atan2(y - cy, x - cx) * 180 / Math.PI}deg)`;
+
+          const fadeMargin = 100;
+          const visible = x > -fadeMargin && x < window.innerWidth + fadeMargin && y > -fadeMargin && y < window.innerHeight + fadeMargin;
+          word.style.opacity = visible ? 0.85 : 0;
+
+          if (!visible) {
+            word.textContent = contentQueue.shift();
+            contentQueue.push(randomSentence());
+            word.href = `#link${Math.floor(Math.random() * 1000)}`;
+          }
+        }
+        setTimeout(() => requestAnimationFrame(step), 16);
+      }
+      step();
+    }
+
+    createWords();
+    animateOrbit();
+  </script>
+</body>
+</html>
