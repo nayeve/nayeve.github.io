@@ -3,60 +3,345 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sitemap - JayCorp</title>
+  <title>Jaycorp.us</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      font-family: sans-serif;
-      background: #f0f0f0;
+      background: #87ceeb;
+      overflow: hidden;
     }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: stretch;
-      height: 100%;
-      padding: 2rem;
-    }
-
-    a {
+    canvas {
       display: block;
-      margin: 1rem 0;
-      padding: 2rem;
-      width: 100%;
-      text-align: center;
-      font-size: 6vw;
-      text-decoration: none;
-      color: white;
-      background-color: #333;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
     }
-
-    a:hover {
-      background-color: #555;
+    .touch-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 1000;
     }
-
-    @media (min-width: 800px) {
-      a {
-        font-size: 2rem;
-      }
+    .touch-controls button {
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.7);
     }
-  </style>
+#coinUrlDisplay {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: sans-serif;
+  font-size: 14px;
+  z-index: 1000;
+  pointer-events: none;
+}
+</style>
 </head>
 <body>
+<canvas id="gameCanvas"></canvas>
+<div id="coinUrlDisplay"></div>
+  <div class="touch-controls">
+    <button id="left">←</button>
+    <button id="jump">↑</button>
+    <button id="right">→</button>
+  </div>
+  <audio id="coinSound" src="https://www.soundjay.com/button/sounds/button-3.mp3" preload="auto"></audio>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-<div class="container" id="sitemap">
-  <a href="collar.html">collar.html</a>
-  <a href="index.html">index.html</a>
-  <a href="legalai.html">legalai.html</a>
-  <a href="payments.html">payments.html</a>
-  <a href="typography_markdown.html">typography_markdown.html</a>
-  <a href="wordcloud.html">wordcloud.html</a>
-</div>
+    const gravity = 1;
+    const friction = 0.9;
+    const keys = {};
+    const groundLevel = canvas.height - 100;
+    requestAnimationFrame(gameLoop);
 
+    let imageLoaded = false;
+    const marioImg = new Image();
+    marioImg.src = "https://upload.wikimedia.org/wikipedia/commons/5/5e/Pixel_Mario.svg";
+    marioImg.onload = () => {
+      imageLoaded = true;
+    };
+    marioImg.onerror = () => {
+      console.error("Failed to load Mario image.");
+    };
+
+    class Player {
+      constructor() {
+        this.width = 50;
+        this.height = 50;
+        this.x = 100;
+        this.y = groundLevel - this.height;
+        this.dy = 0;
+        this.dx = 0;
+        this.jumpPower = -20;
+        this.speed = 1.5;
+        this.grounded = false;
+      }
+
+      update() {
+        if (keys["ArrowRight"]) {
+          this.dx += this.speed * 0.5;
+        } else if (keys["ArrowLeft"]) {
+          this.dx -= this.speed * 0.5;
+        } else {
+          this.dx *= friction;
+        }
+
+        if (keys[" "] && this.grounded) {
+          this.dy = this.jumpPower;
+          this.grounded = false;
+        }
+
+        this.dy += gravity;
+
+        let nextX = this.x + this.dx;
+        for (let p of platforms) {
+          if (
+            nextX + this.width > p.x &&
+            nextX < p.x + p.width &&
+            this.y + this.height > p.y &&
+            this.y < p.y + p.height
+          ) {
+            if (this.dx > 0) nextX = p.x - this.width;
+            if (this.dx < 0) nextX = p.x + p.width;
+            this.dx = 0;
+          }
+        }
+        this.x = nextX;
+
+        let nextY = this.y + this.dy;
+        this.grounded = false;
+        for (let p of platforms) {
+          const isFalling = this.dy >= 0;
+          const nextBottom = nextY + this.height;
+          const currentBottom = this.y + this.height;
+          const isOverlappingX = this.x + this.width > p.x && this.x < p.x + p.width;
+          const willLand = currentBottom <= p.y && nextBottom >= p.y;
+
+          if (isFalling && isOverlappingX && willLand) {
+            nextY = p.y - this.height;
+            this.dy = 0;
+            this.grounded = true;
+            break;
+          }
+        }
+        this.y = nextY;
+
+        if (this.y + this.height >= groundLevel) {
+          this.y = groundLevel - this.height;
+          this.dy = 0;
+          this.grounded = true;
+        }
+      }
+
+      draw() {
+        if (imageLoaded) {
+          ctx.drawImage(marioImg, this.x, this.y, this.width, this.height);
+        } else {
+          ctx.fillStyle = "red";
+          ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+      }
+    }
+
+    class Platform {
+      constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+      }
+
+      draw() {
+        ctx.fillStyle = "#8B4513";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+      }
+    }
+
+    class Coin {
+      constructor(x, y, url) {
+        this.x = x;
+        this.y = y;
+        this.radius = 15;
+        this.collected = false;
+        this.url = url;
+        this.held = false;
+      }
+
+      draw() {
+        if (!this.collected) {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = this.held ? 'orange' : 'gold';
+          ctx.fill();
+          ctx.closePath();
+        }
+      }
+
+      checkCollision(player) {
+        if (
+          !this.collected &&
+          player.x < this.x + this.radius &&
+          player.x + player.width > this.x - this.radius &&
+          player.y < this.y + this.radius &&
+          player.y + player.height > this.y - this.radius
+        ) {
+          coins.forEach(c => c.held = false);
+          this.held = true;
+          document.getElementById("coinUrlDisplay").textContent = this.url;
+          coinSound.play();
+        }
+      }
+    }
+
+    class Enemy {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.width = 40;
+        this.height = 40;
+        this.direction = 1;
+        this.speed = 2;
+      }
+
+      update() {
+        this.x += this.speed * this.direction;
+        if (this.x < 0 || this.x + this.width > canvas.width) {
+          this.direction *= -1;
+        }
+      }
+
+      draw() {
+        ctx.fillStyle = "purple";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+      }
+
+      checkCollision(player) {
+        return (
+          player.x < this.x + this.width &&
+          player.x + player.width > this.x &&
+          player.y < this.y + this.height &&
+          player.y + player.height > this.y
+        );
+      }
+    }
+
+    const player = new Player();
+    const pipeTop = groundLevel - 100;
+const pipeX = 650;
+const pipeWidth = 60;
+const pipeHeight = 100;
+const platforms = [
+  new Platform(300, groundLevel - 100, 100, 20),
+  new Platform(500, groundLevel - 150, 100, 20),
+  new Platform(700, groundLevel - 200, 100, 20),
+  new Platform(100, groundLevel - 250, 100, 20),
+  new Platform(250, groundLevel - 300, 100, 20),
+  new Platform(400, groundLevel - 350, 100, 20),
+  new Platform(550, groundLevel - 400, 100, 20),
+  new Platform(700, groundLevel - 450, 100, 20),
+  new Platform(850, groundLevel - 500, 100, 20),
+  new Platform(pipeX, pipeTop, pipeWidth, 10) // pipe top as platform
+];
+
+    const coins = [
+  new Coin(330, groundLevel - 130, 'https://jaycorp.us/collar.html'),
+  new Coin(530, groundLevel - 180, 'https://jaycorp.us/index.html'),
+  new Coin(730, groundLevel - 230, 'https://jaycorp.us/legalai.html'),
+  new Coin(130, groundLevel - 280, 'https://jaycorp.us/payments.html'),
+  new Coin(280, groundLevel - 330, 'https://jaycorp.us/typography_markdown.html'),
+  new Coin(430, groundLevel - 380, 'https://jaycorp.us/wordcloud.html'),
+];
+
+    const enemies = [
+      new Enemy(400, groundLevel - 40),
+    ];
+
+    function gameLoop() {
+      const heldCoin = coins.find(c => c.held && !c.collected);
+      document.getElementById("coinUrlDisplay").textContent = heldCoin ? heldCoin.url : "";
+      if (keys['ArrowDown']) {
+        const heldCoin = coins.find(c => c.held && !c.collected);
+        if (heldCoin) {
+          heldCoin.collected = true;
+          window.location.href = heldCoin.url;
+          return;
+        }
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#87ceeb";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      player.update();
+
+      // pipe jump logic: if Mario is standing on top of pipe and coin is held, redirect
+      if (
+        player.grounded &&
+        player.x + player.width > pipeX &&
+        player.x < pipeX + pipeWidth &&
+        Math.abs(player.y + player.height - pipeTop) < 5
+      ) {
+        const heldCoin = coins.find(c => c.held && !c.collected);
+        if (heldCoin) {
+          heldCoin.collected = true;
+          window.location.href = heldCoin.url;
+          return;
+        }
+      }
+      player.draw();
+
+      platforms.forEach((p) => p.draw());
+      coins.forEach((coin) => {
+        coin.draw();
+        coin.checkCollision(player);
+      });
+
+      enemies.forEach((enemy) => {
+        enemy.update();
+        enemy.draw();
+        if (enemy.checkCollision(player)) {
+          alert("Game Over!");
+          window.location.reload();
+        }
+      });
+
+      ctx.fillStyle = "green";
+      ctx.fillRect(0, groundLevel, canvas.width, 100);
+
+      // Draw pipe body
+      ctx.fillStyle = "#228B22";
+      ctx.fillRect(pipeX, pipeTop + 10, pipeWidth, pipeHeight);
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    window.addEventListener("keydown", (e) => {
+      keys[e.key] = true;
+    });
+
+    window.addEventListener("keyup", (e) => {
+      keys[e.key] = false;
+    });
+
+    document.getElementById("left").ontouchstart = () => (keys["ArrowLeft"] = true);
+    document.getElementById("left").ontouchend = () => (keys["ArrowLeft"] = false);
+    document.getElementById("right").ontouchstart = () => (keys["ArrowRight"] = true);
+    document.getElementById("right").ontouchend = () => (keys["ArrowRight"] = false);
+    document.getElementById("jump").ontouchstart = () => (keys[" "] = true);
+    document.getElementById("jump").ontouchend = () => (keys[" "] = false);
+  </script>
 </body>
 </html>
