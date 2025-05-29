@@ -143,15 +143,15 @@ let scrollTarget = 0;
 
         const gravity = 0.0015;
         const len = wordElements.length;
-        const cx = 260;
+        const cx = window.innerWidth / 2;
         const cy = window.innerHeight / 2;
 
         for (let i = 0; i < len; i++) {
           const angle = ((i / len) * 2 * Math.PI) + t;
           const layerBase = 1 + (i % 5) * 0.2;
           const keplerFactor = 1 + Math.min(Math.abs(scrollVelocity * 150), 0.3);
-          let a = 420 * layerBase * keplerFactor;
-          let b = 340 * layerBase * keplerFactor;
+          let a = (window.innerWidth < 768 ? 240 : 420) * layerBase * keplerFactor;
+          let b = (window.innerWidth < 768 ? 200 : 340) * layerBase * keplerFactor;
 
           let x = a * Math.cos(angle) + cx;
           let y = b * Math.sin(angle) + cy;
