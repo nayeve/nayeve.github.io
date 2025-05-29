@@ -143,7 +143,8 @@ let scrollTarget = 0;
 
         const gravity = 0.0015;
         const len = wordElements.length;
-        const cx = window.innerWidth / 2;
+        const screenWidth = window.innerWidth;
+        const cx = screenWidth > 1024 ? screenWidth / 2 : screenWidth > 768 ? screenWidth * 0.45 : screenWidth * 0.35;
         const cy = window.innerHeight / 2;
 
         for (let i = 0; i < len; i++) {
