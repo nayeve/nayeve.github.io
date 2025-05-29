@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Private Legal AI Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <!-- Hero -->
+<section class="text-center py-20 px-6 bg-blue-50">
+  <h2 class="text-3xl sm:text-4xl font-bold mb-4">Secure. Private. AI-Powered Legal Analysis.</h2>
+  <p class="text-lg w-full mx-auto mb-6 flow-text">Deploy a fully self-hosted AI legal system for contract analysis, case summarization, and internal document automation with zero exposure to OpenAI or Anthropic.</p>
+  <a href="#contact" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">Book a Demo</a>
+</section>
+
+<!-- Features -->
+<section id="features" class="w-full px-6 py-16">
+  <h3 class="text-2xl font-bold mb-8 text-center">Core Features</h3>
+  <div class="grid md:grid-cols-2 gap-8">
+    <div>
+      <h4 class="text-lg font-semibold">Private Legal AI</h4>
+      <p class="flow-text">Trained on your internal case law, filings, and contracts to deliver GPT-4 level analysis privately.</p>
+    </div>
+    <div>
+      <h4 class="text-lg font-semibold">Real-Time Case Q&A</h4>
+      <p class="flow-text">Use RAG pipelines powered by LlamaIndex to ask legal questions and retrieve relevant documents instantly.</p>
+    </div>
+    <div>
+      <h4 class="text-lg font-semibold">End-to-End Automation</h4>
+      <p class="flow-text">n8n workflows automate everything from document uploads to Slack and email updates.</p>
+    </div>
+    <div>
+      <h4 class="text-lg font-semibold">Streamlit Web UI</h4>
+      <p class="flow-text">Easy-to-use interface for your team to chat with the model, upload docs, and view results on demand.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Tech Stack -->
+<section id="tech" class="bg-white py-16 px-4">
+  <div class="w-full px-6">
+    <h3 class="text-2xl font-bold mb-8 text-center">Technology Stack</h3>
+    <ul class="space-y-4 text-sm">
+      <li><strong><a href="https://ai.meta.com/llama/" target="_blank" class="text-blue-600 hover:underline">LLaMA 3 70B</a></strong>: Quantized & accelerated with vLLM. Provides advanced natural language understanding comparable to GPT-4, with full control over training, tuning, and inference in a private setting.</li>
+      <li><strong><a href="https://www.coreweave.com/" target="_blank" class="text-blue-600 hover:underline">CoreWeave GPUs</a></strong>: Hosted on dual A100s for rapid inference and scalable model execution, ensuring high performance even under demanding legal workloads.</li>
+      <li><strong><a href="https://www.trychroma.com/" target="_blank" class="text-blue-600 hover:underline">ChromaDB</a></strong>: Vector database for efficient document embedding and semantic search, enabling quick retrieval of relevant legal texts across case files and contracts.</li>
+      <li><strong><a href="https://www.llamaindex.ai/" target="_blank" class="text-blue-600 hover:underline">LlamaIndex</a></strong>: Enables retrieval-augmented generation (RAG) pipelines for real-time Q&A, grounding answers in specific firm documents, statutes, and filings.</li>
+      <li><strong><a href="https://n8n.io/" target="_blank" class="text-blue-600 hover:underline">n8n</a></strong>: Automation layer for document ingestion, system alerts, Slack/email integration, and workflow orchestration — no-code and easy to modify.</li>
+      <li><strong><a href="https://streamlit.io/" target="_blank" class="text-blue-600 hover:underline">Streamlit</a></strong>: Lightweight, interactive web UI framework used for internal tools. Allows staff to query the model, upload documents, and access analysis results instantly.</li>
+      <li><strong>Security</strong>: Enterprise-grade authentication using JWT tokens, IP allowlists, and full audit trails to meet compliance standards and preserve confidentiality.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing" class="bg-gray-100 py-16 px-4">
+  <div class="w-full px-6">
+    <h3 class="text-2xl font-bold mb-8 text-center">Estimated Pricing</h3>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white shadow-md rounded-lg">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="py-3 px-6 text-left">Package</th>
+            <th class="py-3 px-6 text-left">Features</th>
+            <th class="py-3 px-6 text-left">Price</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm">
+          <tr class="border-b">
+            <td class="py-3 px-6 font-semibold">Starter</td>
+            <td class="py-3 px-6">Basic LLaMA 3 setup, single-user interface, document summary only</td>
+            <td class="py-3 px-6">$7,500</td>
+          </tr>
+          <tr class="border-b bg-gray-50">
+            <td class="py-3 px-6 font-semibold">Professional</td>
+            <td class="py-3 px-6">Multi-user access, Streamlit UI, full Q&A with LlamaIndex, basic automation</td>
+            <td class="py-3 px-6">$18,000</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-6 font-semibold">Enterprise</td>
+            <td class="py-3 px-6">All features + CoreWeave hosting, JWT/IP security, full audit logging, n8n automation</td>
+            <td class="py-3 px-6">$35,000+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Roles -->
+<section id="roles" class="bg-gray-50 py-16 px-4">
+  <div class="max-w-6xl mx-auto">
+    <h3 class="text-2xl font-bold mb-8 text-center">AI Legal Analyst Role Matrix</h3>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white shadow-md rounded-lg text-sm">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="py-3 px-4 text-left">Role</th>
+            <th class="py-3 px-4 text-left">Function</th>
+            <th class="py-3 px-4 text-left">Example Prompt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b">
+            <td class="py-3 px-4 font-medium">Case Law Researcher</td>
+            <td class="py-3 px-4">Finds and summarizes relevant precedents based on case facts.</td>
+            <td class="py-3 px-4">"Summarize precedents relevant to breach of contract involving non-compete clauses."</td>
+          </tr>
+          <tr class="border-b bg-gray-50">
+            <td class="py-3 px-4 font-medium">Contract Analyzer</td>
+            <td class="py-3 px-4">Parses and highlights key clauses, obligations, and risks.</td>
+            <td class="py-3 px-4">"Highlight any clauses that could be a liability in this NDA draft."</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 font-medium">Legal Summarizer</td>
+            <td class="py-3 px-4">Generates concise summaries of lengthy case files and filings.</td>
+            <td class="py-3 px-4">"Summarize the plaintiff's arguments from this court document."</td>
+          </tr>
+          <tr class="border-b bg-gray-50">
+            <td class="py-3 px-4 font-medium">Litigation Support</td>
+            <td class="py-3 px-4">Answers complex legal queries based on firm’s internal knowledge base.</td>
+            <td class="py-3 px-4">"What defenses have we used in ADA-related cases since 2020?"</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4 font-medium">Compliance Checker</td>
+            <td class="py-3 px-4">Reviews contracts and processes for regulatory risks.</td>
+            <td class="py-3 px-4">"Does this contract comply with GDPR and HIPAA requirements?"</td>
+          </tr>
+          <tr class="border-b bg-gray-50">
+            <td class="py-3 px-4 font-medium">Draft Generator</td>
+            <td class="py-3 px-4">Creates drafts of motions, letters, and contracts from templates.</td>
+            <td class="py-3 px-4">"Generate a motion to dismiss for lack of jurisdiction."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+  <!-- Footer -->
+  <footer class="text-center text-xs text-gray-500 py-6 bg-gray-100">
+    &copy; 2025 LegalAI Systems. All rights reserved.
+  </footer>
+
+  <!-- jQuery and Flowtype Script -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Flowtype.js/1.1.0/flowtype.min.js"></script>
+  <script>
+    window.addEventListener('load', function () {
+      if (typeof jQuery !== 'undefined' && typeof jQuery.fn.flowtype !== 'undefined') {
+        jQuery('.flow-text').flowtype({
+          minimum: 500,
+          maximum: 1200,
+          minFont: 14,
+          maxFont: 20,
+          fontRatio: 15
+        });
+      }
+    });
+  </script>
+</body>
+</html>
