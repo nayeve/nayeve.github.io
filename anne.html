@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anne’s Roast Reel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { overscroll-behavior-y: none; }
+    #insult-container { max-height: calc(100vh - 160px); overflow-y: auto; scroll-behavior: smooth; }
+    .insult { animation: slideIn 0.5s ease-in-out; }
+    .flash { animation: flash 1s ease-in-out; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes flash { 0%, 100% { background-color: #7f1d1d; } 50% { background-color: #b91c1c; } }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-start font-mono">
+  <div class="w-full max-w-md p-4">
+    <h1 class="text-3xl font-bold text-red-600 text-center mb-4">Anne’s Roast Reel</h1>
+    <p class="text-sm text-center mb-2 text-gray-400">Insult Count: <span id="counter">0</span></p>
+    <div id="insult-container" class="flex flex-col space-y-2"></div>
+    <p class="text-xs mt-4 text-center italic text-gray-400">Fictional Kittyverse shade, no real-world harm!</p>
+  </div>
+
+  <script>
+    const adjectives = ['Sloppy', 'Grimy', 'Nasty', 'Vile', 'Filthy', 'Skanky', 'Trashy', 'Sleazy', 'Lowlife', 'Shady'];
+    const nouns = ['Skank', 'Ho', 'Tramp', 'Whore', 'Slut', 'Floozy', 'Tart', 'Hussy', 'Dirtbag', 'Bitch'];
+    const descriptors = ['Cum-Dump', 'Bar-Hopping', 'Rando-Fucking', 'Cash-Scamming', 'Ex-Lying', 'Birthday-Ditching', 'Booze-Guzzling', 'Uber-Skipping', 'Creep-Slandering', 'Death-Cursing'];
+
+    function generateInsult() {
+      const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const noun = nouns[Math.floor(Math.random() * nouns.length)];
+      const desc = descriptors[Math.floor(Math.random() * descriptors.length)];
+      return `${adj} ${noun} ${desc}`;
+    }
+
+    function getTimestamp() {
+      const now = new Date();
+      return now.toLocaleString('en-US', { 
+        timeZone: 'America/New_York', 
+        hour: 'numeric', 
+        minute: 'numeric', 
+        second: 'numeric', 
+        hour12: true 
+      });
+    }
+
+    const insultContainer = document.getElementById('insult-container');
+    const counterElement = document.getElementById('counter');
+    let insultCount = 0;
+
+    function addInsult() {
+      const insultDiv = document.createElement('div');
+      insultDiv.className = 'insult text-lg text-center p-2 bg-gray-800 rounded flash';
+      const timestamp = getTimestamp();
+      insultDiv.innerHTML = `<span class="text-gray-400 text-sm">[${timestamp}]</span> ${generateInsult()}`;
+      insultContainer.prepend(insultDiv);
+      insultCount++;
+      counterElement.textContent = insultCount;
+
+      if (insultCount > 20) {
+        insultContainer.removeChild(insultContainer.lastChild);
+        insultCount--;
+      }
+
+      insultContainer.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => insultDiv.classList.remove('flash'), 1000);
+    }
+
+    for (let i = 0; i < 10; i++) addInsult();
+    setInterval(addInsult, 3000);
+  </script>
+</body>
+</html>
