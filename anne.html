@@ -7,31 +7,47 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { overscroll-behavior-y: none; }
-    #insult-container { max-height: calc(100vh - 160px); overflow-y: auto; scroll-behavior: smooth; }
+    #insult-container { max-height: calc(100vh - 200px); overflow-y: auto; scroll-behavior: smooth; }
     .insult { animation: slideIn 0.5s ease-in-out; }
     .flash { animation: flash 1s ease-in-out; }
     @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes flash { 0%, 100% { background-color: #7f1d1d; } 50% { background-color: #b91c1c; } }
   </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-start font-mono">
-  <div class="w-full max-w-md p-4">
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-between font-mono">
+  <div class="w-full max-w-md p-4 flex flex-col flex-grow">
     <h1 class="text-3xl font-bold text-red-600 text-center mb-4">Anne’s Roast Reel</h1>
-    <p class="text-sm text-center mb-2 text-gray-400">Insult Count: <span id="counter">0</span></p>
-    <div id="insult-container" class="flex flex-col space-y-2"></div>
-    <p class="text-xs mt-4 text-center italic text-gray-400">Fictional Kittyverse shade, no real-world harm!</p>
+    <div id="insult-container" class="flex flex-col space-y-2 mb-4"></div>
+    <div class="mt-auto">
+      <input id="custom-insult" type="text" placeholder="Add your own roast..." class="w-full p-2 bg-gray-800 text-white rounded border border-gray-600 focus:outline-none focus:border-red-600" maxlength="50">
+      <button id="submit-insult" class="w-full mt-2 p-2 bg-red-600 text-white rounded hover:bg-red-700">Send Roast</button>
+    </div>
+    <p class="text-xs mt-4 text-center italic text-gray-400">Fictional Kittyverse shade by anonymous users, no real-world harm!</p>
   </div>
 
   <script>
-    const adjectives = ['Sloppy', 'Grimy', 'Nasty', 'Vile', 'Filthy', 'Skanky', 'Trashy', 'Sleazy', 'Lowlife', 'Shady'];
-    const nouns = ['Skank', 'Ho', 'Tramp', 'Whore', 'Slut', 'Floozy', 'Tart', 'Hussy', 'Dirtbag', 'Bitch'];
-    const descriptors = ['Cum-Dump', 'Bar-Hopping', 'Rando-Fucking', 'Cash-Scamming', 'Ex-Lying', 'Birthday-Ditching', 'Booze-Guzzling', 'Uber-Skipping', 'Creep-Slandering', 'Death-Cursing'];
+    const adjectives = ['Sloppy', 'Grimy', 'Nasty', 'Vile', 'Filthy', 'Skanky', 'Trashy', 'Sleazy', 'Lowlife', 'Shady', 'Rotten', 'Foul', 'Rank', 'Crusty', 'Putrid'];
+    const nouns = ['Skank', 'Ho', 'Tramp', 'Whore', 'Slut', 'Floozy', 'Tart', 'Hussy', 'Dirtbag', 'Bitch', 'Hag', 'Wench', 'Trollop', 'Harlot', 'Strumpet'];
+    const descriptors = ['Cum-Dump', 'Bar-Hopping', 'Rando-Fucking', 'Cash-Scamming', 'Ex-Lying', 'Birthday-Ditching', 'Booze-Guzzling', 'Uber-Skipping', 'Creep-Slandering', 'Death-Cursing', 'Lie-Spinning', 'Trust-Breaking', 'Heart-Stabbing', 'Dick-Chasing', 'Barf-Worthy'];
+    const userPrefixes = ['Barfly', 'Shade', 'Kitty', 'Savage', 'Rogue', 'Booze', 'Night', 'Ghost', 'Fire', 'Claw'];
+    const userSuffixes = ['Buster', 'Slinger', 'Stalker', 'Killer', 'Ripper', 'Smasher', 'Hunter', 'Viper', 'Titan', '123'];
+
+    function generateUser() {
+      const prefix = userPrefixes[Math.floor(Math.random() * userPrefixes.length)];
+      const suffix = userSuffixes[Math.floor(Math.random() * userSuffixes.length)];
+      return `${prefix}${suffix}`;
+    }
 
     function generateInsult() {
       const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
       const noun = nouns[Math.floor(Math.random() * nouns.length)];
       const desc = descriptors[Math.floor(Math.random() * descriptors.length)];
-      return `${adj} ${noun} ${desc}`;
+      const structures = [
+        `${adj} ${noun} ${desc}`,
+        `${desc} ${adj} ${noun}`,
+        `${noun} ${desc} ${adj}`
+      ];
+      return structures[Math.floor(Math.random() * structures.length)];
     }
 
     function getTimestamp() {
@@ -46,17 +62,21 @@
     }
 
     const insultContainer = document.getElementById('insult-container');
-    const counterElement = document.getElementById('counter');
+    const customInsultInput = document.getElementById('custom-insult');
+    const submitInsultButton = document.getElementById('submit-insult');
     let insultCount = 0;
 
-    function addInsult() {
+    function addInsult(insultText, isCustom = false) {
       const insultDiv = document.createElement('div');
-      insultDiv.className = 'insult text-lg text-center p-2 bg-gray-800 rounded flash';
+      insultDiv.className = 'insult text-lg p-2 bg-gray-800 rounded flex flex-col flash';
       const timestamp = getTimestamp();
-      insultDiv.innerHTML = `<span class="text-gray-400 text-sm">[${timestamp}]</span> ${generateInsult()}`;
+      const user = isCustom ? 'You' : generateUser();
+      insultDiv.innerHTML = `
+        <span class="text-gray-400 text-sm">${timestamp} @${user}</span>
+        <span class="text-white">${insultText}</span>
+      `;
       insultContainer.prepend(insultDiv);
       insultCount++;
-      counterElement.textContent = insultCount;
 
       if (insultCount > 20) {
         insultContainer.removeChild(insultContainer.lastChild);
@@ -67,8 +87,26 @@
       setTimeout(() => insultDiv.classList.remove('flash'), 1000);
     }
 
-    for (let i = 0; i < 10; i++) addInsult();
-    setInterval(addInsult, 3000);
+    submitInsultButton.addEventListener('click', () => {
+      const customInsult = customInsultInput.value.trim();
+      if (customInsult) {
+        addInsult(customInsult, true);
+        customInsultInput.value = '';
+      }
+    });
+
+    customInsultInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const customInsult = customInsultInput.value.trim();
+        if (customInsult) {
+          addInsult(customInsult, true);
+          customInsultInput.value = '';
+        }
+      }
+    });
+
+    for (let i = 0; i < 10; i++) addInsult(generateInsult());
+    setInterval(() => addInsult(generateInsult()), 3000);
   </script>
 </body>
 </html>
