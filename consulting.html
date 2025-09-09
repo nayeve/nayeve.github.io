@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Implementation That Actually Works | SecureAI Systems</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #60a5fa;
+        }
+        
+        .cta-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.1), transparent 70%);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .credibility {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .cred-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .section {
+            padding: 4rem 0;
+            background: white;
+        }
+        
+        .section.dark {
+            background: #0f172a;
+            color: white;
+        }
+        
+        .section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .problem-card {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .problem-card h3 {
+            color: #ef4444;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .solution-card {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .solution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .solution-card h3 {
+            color: #10b981;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .proof-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .proof-card {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .proof-card .number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #60a5fa;
+            display: block;
+        }
+        
+        .testimonial {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            padding: 3rem;
+            border-radius: 16px;
+            margin: 3rem 0;
+            position: relative;
+        }
+        
+        .testimonial::before {
+            content: '"';
+            font-size: 6rem;
+            color: #60a5fa;
+            position: absolute;
+            top: -1rem;
+            left: 2rem;
+            font-family: serif;
+        }
+        
+        .testimonial-content {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: #64748b;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .credibility { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">SecureAI Systems</div>
+            <ul class="nav-links">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="#contact" class="cta-btn">Book Strategy Call</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>AI Implementation That Actually Works in Production</h1>
+                <p class="subtitle">Stop wasting money on AI consultants who've never built systems that scale. Get secure, profitable AI solutions from a CTO who's been deploying enterprise systems for 25 years.</p>
+                
+                <div class="credibility">
+                    <div class="cred-item">
+                        <span>🎯</span> Defcon Speaker
+                    </div>
+                    <div class="cred-item">
+                        <span>🏢</span> 100+ Enterprise Deployments
+                    </div>
+                    <div class="cred-item">
+                        <span>🚀</span> Built 3 Profitable Companies
+                    </div>
+                    <div class="cred-item">
+                        <span>🛡️</span> Security-First Architecture
+                    </div>
+                </div>
+                
+                <a href="#contact" class="cta-btn" style="font-size: 1.2rem; padding: 1rem 2rem; margin-top: 1rem;">Get Your AI Strategy Assessment</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section dark">
+        <div class="container">
+            <h2>Most AI Consultants Are Costing You Money</h2>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <h3>Theory Without Practice</h3>
+                    <p>They learned AI in classrooms, not production. When your system crashes at 2 AM, they're nowhere to be found.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>Security Afterthought</h3>
+                    <p>They build impressive demos that can't pass a basic security audit. Your compliance team kills the project.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>No Business Understanding</h3>
+                    <p>They optimize for cool technology instead of ROI. You get expensive toys that don't move the needle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2>Why Enterprises Choose Me</h2>
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <h3>25 Years in Production</h3>
+                    <p>I've been building systems since most AI experts were in middle school. I know what breaks at scale and how to prevent it.</p>
+                </div>
+                <div class="solution-card">
+                    <h3>Security-First Design</h3>
+                    <p>Defcon speaking credentials and enterprise security experience. Your AI systems will pass the toughest audits.</p>
+                </div>
+                <div class="solution-card">
+                    <h3>Proven ROI Track Record</h3>
+                    <p>Built profitable companies in automotive, fintech, and telecom. I understand how AI translates to business value.</p>
+                </div>
+                <div class="solution-card">
+                    <h3>Industry-Specific Expertise</h3>
+                    <p>100+ automotive dealership implementations. I know your industry's real problems, not just the buzzwords.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section dark">
+        <div class="container">
+            <h2>Real Results, Not Demos</h2>
+            <div class="proof-points">
+                <div class="proof-card">
+                    <span class="number">100+</span>
+                    <p>Automotive dealership service departments optimized with AI-powered scheduling and inventory management</p>
+                </div>
+                <div class="proof-card">
+                    <span class="number">25</span>
+                    <p>Years building enterprise systems that handle real load, real security threats, and real business pressure</p>
+                </div>
+                <div class="proof-card">
+                    <span class="number">3</span>
+                    <p>Profitable companies built from scratch across automotive, fintech, and enterprise systems</p>
+                </div>
+            </div>
+
+            <div class="testimonial">
+                <div class="testimonial-content">
+                    Finally, an AI consultant who understands our business constraints. Instead of chasing the latest trends, he built us a system that actually improves our bottom line while meeting our security requirements.
+                </div>
+                <div class="testimonial-author">— CTO, Fortune 500 Financial Services</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="services">
+        <div class="container">
+            <h2>How I Help Enterprises Win with AI</h2>
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <h3>Secure AI Architecture</h3>
+                    <p>Design AI systems that pass enterprise security audits from day one. No retrofitting security as an afterthought.</p>
+                </div>
+                <div class="solution-card">
+                    <h3>Legacy System Integration</h3>
+                    <p>Connect AI to your existing enterprise systems without breaking what already works. Gradual transformation, not rip-and-replace.</p>
+                </div>
+                <div class="solution-card">
+                    <h3>Fractional CTO Services</h3>
+                    <p>Strategic AI guidance without the full-time executive cost. Get CTO-level decisions with implementation expertise.</p>
+                </div>
+                <div class="solution-card">
+                    <h3>ROI-Focused Implementation</h3>
+                    <p>Build AI systems that measurably improve your business metrics, not just impressive technical achievements.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <h2>Ready to Implement AI That Actually Works?</h2>
+            <p>Book a 30-minute strategy call. I'll assess your current systems, identify your highest-ROI AI opportunities, and show you exactly how to implement them securely.</p>
+            <a href="mailto:contact@secureai-systems.com" class="cta-btn" style="font-size: 1.2rem; padding: 1rem 2rem;">Book Your Strategy Assessment</a>
+            <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">No sales pitch. Just 30 minutes of actionable AI strategy from someone who's actually built these systems.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SecureAI Systems. Built by practitioners, for practitioners.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                header.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Simple animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.solution-card, .problem-card, .proof-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
